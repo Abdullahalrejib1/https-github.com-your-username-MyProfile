@@ -8,8 +8,8 @@ COPY package*.json ./
 # Install dependencies (production only for backend)
 RUN npm install --production
 
-# Copy server file
-COPY server.js ./
+# Copy server file (Supabase version)
+COPY server-supabase-api.js ./
 
 # Expose port
 EXPOSE 3001
@@ -18,5 +18,5 @@ EXPOSE 3001
 ENV PORT=3001
 
 # Start server
-CMD ["node", "server.js"]
+CMD ["node", "server-supabase-api.js"]
 

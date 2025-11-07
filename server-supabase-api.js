@@ -1,9 +1,13 @@
+import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import { createClient } from '@supabase/supabase-js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+
+// Load environment variables
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,13 +19,25 @@ const PORT = process.env.PORT || 3001;
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://ivoppfeuslvfkmamizsv.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
 
+console.log('🔍 Environment check:');
+console.log('   SUPABASE_URL:', SUPABASE_URL ? '✅ Set' : '❌ Missing');
+console.log('   SUPABASE_KEY:', SUPABASE_KEY ? '✅ Set (' + SUPABASE_KEY.substring(0, 20) + '...)' : '❌ Missing');
+
 // Initialize Supabase client
 let supabase = null;
 
 // Initialize Supabase connection
 const initSupabase = async () => {
   try {
+    console.log('\n🔍 Checking environment variables...');
+    console.log('   SUPABASE_URL:', SUPABASE_URL);
+    console.log('   SUPABASE_KEY exists:', !!SUPABASE_KEY);
+    
     if (!SUPABASE_URL || !SUPABASE_KEY) {
+      console.error('❌ Missing environment variables!');
+      console.error('   Make sure .env file exists with:');
+      console.error('   SUPABASE_URL=https://ivoppfeuslvfkmamizsv.supabase.co');
+      console.error('   SUPABASE_SERVICE_ROLE_KEY=your-key-here');
       throw new Error('SUPABASE_URL and SUPABASE_KEY environment variables are required');
     }
 
