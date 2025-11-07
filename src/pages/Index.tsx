@@ -31,10 +31,7 @@ import {
   Download,
   ExternalLink
 } from 'lucide-react';
-
-const API_URL = import.meta.env.MODE === 'development' 
-  ? 'http://localhost:3001/api' 
-  : (import.meta.env.VITE_API_URL || '/api');
+import { supabase } from '@/lib/supabase';
 
 // Floating Particles Component
 const FloatingParticles = () => {
@@ -133,23 +130,22 @@ const Index = () => {
     
     const loadPortfolioData = async () => {
       try {
-        const url = `${API_URL}/portfolio`;
+        const { data, error } = await supabase
+          .from('PortfolioData')
+          .select('data')
+          .order('createdAt', { ascending: false })
+          .limit(1)
+          .single();
         
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          mode: 'cors'
-        });
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        if (error) {
+          console.error('Error loading portfolio data:', error);
+          setLoading(false);
+          return;
         }
         
-        const data = await response.json();
-        setPortfolioData(data);
+        if (data && data.data) {
+          setPortfolioData(data.data);
+        }
         setLoading(false);
       } catch (err: any) {
         console.error('Error loading portfolio data:', err);

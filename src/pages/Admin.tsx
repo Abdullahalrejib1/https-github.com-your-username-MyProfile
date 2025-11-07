@@ -35,6 +35,7 @@ import {
   Edit
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/lib/supabase';
 // Static Background (no animations)
 const AdminBackground = () => {
   return (
@@ -94,9 +95,7 @@ const Admin = () => {
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  const API_URL = import.meta.env.MODE === 'development' 
-    ? 'http://localhost:3001/api' 
-    : (import.meta.env.VITE_API_URL || '/api');
+  // Using Supabase directly - no backend needed
 
   useEffect(() => {
     document.documentElement.dir = 'rtl';
@@ -326,39 +325,27 @@ const Admin = () => {
     }
 
     try {
-      const response = await fetch(`${API_URL}/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
+      const { data, error } = await supabase.rpc('login_user', {
+        user_email: email,
+        user_password: password
       });
 
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        const text = await response.text();
-        console.error('Non-JSON response:', text.substring(0, 200));
-        setLoginError('خطأ في الخادم: استجابة غير صحيحة. تأكد من أن الخادم يعمل على المنفذ 3001');
+      if (error) {
+        setLoginError(error.message || 'البريد الإلكتروني أو كلمة المرور غير صحيحة');
         return;
       }
 
-      const data = await response.json();
-
-      if (response.ok && data.success) {
+      if (data && data.success) {
         setAuthToken(data.token);
         setIsAuthenticated(true);
         localStorage.setItem('adminToken', data.token);
         localStorage.setItem('adminEmail', data.user.email);
       } else {
-        setLoginError(data.error || 'البريد الإلكتروني أو كلمة المرور غير صحيحة');
+        setLoginError(data?.error || 'البريد الإلكتروني أو كلمة المرور غير صحيحة');
       }
     } catch (error: any) {
       console.error('Login error:', error);
-      if (error.message && error.message.includes('JSON')) {
-        setLoginError('خطأ في الخادم: استجابة JSON غير صحيحة. تأكد من أن الخادم يعمل على المنفذ 3001');
-      } else {
-        setLoginError('خطأ في الاتصال: ' + (error.message || 'خطأ غير معروف'));
-      }
+      setLoginError('خطأ في الاتصال: ' + (error.message || 'خطأ غير معروف'));
     }
   };
 

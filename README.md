@@ -1,8 +1,17 @@
 # Welcome to your Lovable project
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/12e5f7e9-ca43-41fa-a3f5-cd48293305a1/deploy-status)](https://app.netlify.com/projects/abdullahalreijb/deploys)
+
 ## Project info
 
 **URL**: https://lovable.dev/projects/3a0fd3af-48a0-4201-8a76-83c878b69e71
+
+**Live Site**: https://abdullahalrejib.netlify.app
+
+**Deployment**: 
+- Frontend: Netlify
+- Database: Supabase (PostgreSQL)
+- No Backend Server Required
 
 ## How can I edit this code?
 
@@ -61,6 +70,24 @@ This project is built with:
 - Tailwind CSS
 
 ## How can I deploy this project?
+
+### Deploy to Netlify (Recommended)
+
+This project is configured to deploy directly to Netlify with Supabase as the database.
+
+**Quick Steps:**
+1. Set up Supabase tables (see `NETLIFY-ONLY-DEPLOY.md`)
+2. Connect your GitHub repo to Netlify
+3. Add environment variables:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+4. Deploy!
+
+For detailed instructions, see:
+- `NETLIFY-ONLY-DEPLOY.md` - Complete deployment guide
+- `SUPABASE-SETUP-NO-BACKEND.md` - Supabase setup guide
+
+### Alternative: Deploy via Lovable
 
 Simply open [Lovable](https://lovable.dev/projects/3a0fd3af-48a0-4201-8a76-83c878b69e71) and click on Share -> Publish.
 
